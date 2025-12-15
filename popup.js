@@ -3,22 +3,38 @@
 
 document.addEventListener('DOMContentLoaded', init);
 
+let currentTab = 'today';
+let webTimeDataCache = null;
+
 async function init() {
   setupTabs();
   setupButtons();
+  updateDateDisplay();
   await loadData();
+}
+
+// Update date display in header
+function updateDateDisplay() {
+  const dateEl = document.getElementById('current-date');
+  const now = new Date();
+  const options = { weekday: 'long', month: 'short', day: 'numeric' };
+  dateEl.textContent = `Today, ${now.toLocaleDateString('en-US', options)}`;
 }
 
 // Tab switching
 function setupTabs() {
-  const tabs = document.querySelectorAll('.tab-btn');
+  const tabs = document.querySelectorAll('.segment-btn');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       
       tab.classList.add('active');
-      document.getElementById(tab.dataset.tab).classList.add('active');
+      currentTab = tab.dataset.tab;
+      document.getElementById(currentTab).classList.add('active');
+      
+      // Update header total based on selected tab
+      updateHeaderTotal();
     });
   });
 }
@@ -33,14 +49,38 @@ function setupButtons() {
 async function loadData() {
   try {
     const data = await chrome.storage.local.get(['webtime_data']);
-    const webTimeData = data.webtime_data || { sites: {}, dailyStats: {} };
+    webTimeDataCache = data.webtime_data || { sites: {}, dailyStats: {} };
     
-    displayTodayStats(webTimeData);
-    displayWeekStats(webTimeData);
-    displayAllTimeStats(webTimeData);
+    displayTodayStats(webTimeDataCache);
+    displayWeekStats(webTimeDataCache);
+    displayAllTimeStats(webTimeDataCache);
+    updateHeaderTotal();
   } catch (error) {
     console.error('Error loading data:', error);
   }
+}
+
+// Update header total time based on current tab
+function updateHeaderTotal() {
+  if (!webTimeDataCache) return;
+  
+  let totalTime = 0;
+  
+  if (currentTab === 'today') {
+    const todayKey = getTodayKey();
+    const todayData = webTimeDataCache.dailyStats[todayKey] || {};
+    totalTime = Object.values(todayData).reduce((sum, data) => sum + data.time, 0);
+  } else if (currentTab === 'week') {
+    const weekKeys = getWeekKeys();
+    weekKeys.forEach(key => {
+      const dayData = webTimeDataCache.dailyStats[key] || {};
+      totalTime += Object.values(dayData).reduce((sum, data) => sum + data.time, 0);
+    });
+  } else {
+    totalTime = Object.values(webTimeDataCache.sites).reduce((sum, data) => sum + data.totalTime, 0);
+  }
+  
+  document.getElementById('header-total').textContent = formatTime(totalTime);
 }
 
 // Format time in human readable format
@@ -59,18 +99,25 @@ function formatTime(ms) {
   }
 }
 
-// Get today's date key
+// Get today's date key (uses local timezone)
 function getTodayKey() {
-  return new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
-// Get date keys for the past 7 days
+// Get date keys for the past 7 days (uses local timezone)
 function getWeekKeys() {
   const keys = [];
   for (let i = 0; i < 7; i++) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    keys.push(date.toISOString().split('T')[0]);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    keys.push(`${year}-${month}-${day}`);
   }
   return keys;
 }
@@ -89,13 +136,11 @@ function displayTodayStats(webTimeData) {
     }))
     .sort((a, b) => b.time - a.time);
   
-  const totalTime = sites.reduce((sum, site) => sum + site.time, 0);
   const siteCount = sites.length;
   
-  document.getElementById('today-total').textContent = formatTime(totalTime);
-  document.getElementById('today-sites').textContent = siteCount;
+  document.getElementById('today-sites').textContent = `${siteCount} site${siteCount !== 1 ? 's' : ''}`;
   
-  displaySiteList('today-list', sites, totalTime);
+  displaySiteList('today-list', sites);
 }
 
 // Display week stats
@@ -123,13 +168,11 @@ function displayWeekStats(webTimeData) {
     }))
     .sort((a, b) => b.time - a.time);
   
-  const totalTime = sites.reduce((sum, site) => sum + site.time, 0);
   const siteCount = sites.length;
   
-  document.getElementById('week-total').textContent = formatTime(totalTime);
-  document.getElementById('week-sites').textContent = siteCount;
+  document.getElementById('week-sites').textContent = `${siteCount} site${siteCount !== 1 ? 's' : ''}`;
   
-  displaySiteList('week-list', sites, totalTime);
+  displaySiteList('week-list', sites);
 }
 
 // Display all-time stats
@@ -143,48 +186,34 @@ function displayAllTimeStats(webTimeData) {
     }))
     .sort((a, b) => b.time - a.time);
   
-  const totalTime = sites.reduce((sum, site) => sum + site.time, 0);
   const siteCount = sites.length;
   
-  document.getElementById('all-total').textContent = formatTime(totalTime);
-  document.getElementById('all-sites').textContent = siteCount;
+  document.getElementById('all-sites').textContent = `${siteCount} site${siteCount !== 1 ? 's' : ''}`;
   
-  displaySiteList('all-list', sites, totalTime);
+  displaySiteList('all-list', sites);
 }
 
 // Display site list
-function displaySiteList(containerId, sites, maxTime) {
+function displaySiteList(containerId, sites) {
   const container = document.getElementById(containerId);
   
   if (sites.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">
-          <svg viewBox="0 0 64 64" width="48" height="48">
-            <path d="M8 12 Q32 8 56 12" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
-            <path d="M14 12 Q12 28 14 52" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <circle cx="13" cy="24" r="2.5" fill="currentColor"/>
-            <circle cx="14" cy="38" r="2.5" fill="currentColor"/>
-            <path d="M24 11 Q26 30 24 56" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <circle cx="25" cy="20" r="2.5" fill="currentColor"/>
-            <circle cx="24" cy="32" r="2.5" fill="currentColor"/>
-            <path d="M34 10 Q32 32 34 58" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <circle cx="33" cy="26" r="2.5" fill="currentColor"/>
-            <path d="M44 11 Q46 28 44 54" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <circle cx="45" cy="22" r="2.5" fill="currentColor"/>
-            <circle cx="44" cy="36" r="2.5" fill="currentColor"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12,6 12,12 16,14"/>
           </svg>
         </div>
-        <div class="empty-state-text">No knots yet.<br>Browse to begin recording.</div>
+        <div class="empty-state-title">No Activity</div>
+        <div class="empty-state-text">Your browsing time will appear here</div>
       </div>
     `;
     return;
   }
   
-  const topTime = sites[0]?.time || 1;
-  
   container.innerHTML = sites.slice(0, 20).map(site => {
-    const percentage = Math.min(100, Math.max(0, (site.time / topTime) * 100)); // Clamp 0-100
     const safeFavicon = sanitizeUrl(site.favicon);
     return `
       <div class="site-item">
@@ -193,10 +222,6 @@ function displaySiteList(containerId, sites, maxTime) {
         </div>
         <div class="site-info">
           <div class="site-name">${escapeHtml(site.domain)}</div>
-          <div class="site-visits">${Math.floor(site.visits)} visit${site.visits !== 1 ? 's' : ''}</div>
-          <div class="time-bar">
-            <div class="time-bar-fill" style="width: ${percentage}%"></div>
-          </div>
         </div>
         <div class="site-time">${formatTime(site.time)}</div>
       </div>

@@ -3,93 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebTime</title>
+  <title>Screen Time</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="container">
     <header>
-      <svg class="logo" viewBox="0 0 64 64" width="40" height="40">
-        <path d="M8 12 Q32 8 56 12" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path d="M14 12 Q12 28 14 52" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <circle cx="13" cy="24" r="2.5" fill="currentColor"/>
-        <circle cx="14" cy="38" r="2.5" fill="currentColor"/>
-        <path d="M24 11 Q26 30 24 56" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <circle cx="25" cy="20" r="2.5" fill="currentColor"/>
-        <circle cx="24" cy="32" r="2.5" fill="currentColor"/>
-        <circle cx="25" cy="44" r="2.5" fill="currentColor"/>
-        <path d="M34 10 Q32 32 34 58" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <circle cx="33" cy="26" r="2.5" fill="currentColor"/>
-        <circle cx="34" cy="42" r="2.5" fill="currentColor"/>
-        <path d="M44 11 Q46 28 44 54" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <circle cx="45" cy="22" r="2.5" fill="currentColor"/>
-        <circle cx="44" cy="36" r="2.5" fill="currentColor"/>
-        <circle cx="45" cy="48" r="2.5" fill="currentColor"/>
-        <path d="M52 12 Q50 26 52 48" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <circle cx="51" cy="28" r="2.5" fill="currentColor"/>
-        <circle cx="52" cy="40" r="2.5" fill="currentColor"/>
-      </svg>
-      <h1>Quipu Pacha</h1>
-      <p class="subtitle">Recording your spacetime</p>
+      <div class="header-top">
+        <span class="header-title">Usage</span>
+        <span class="header-date" id="current-date">Today</span>
+      </div>
+      <div class="total-time" id="header-total">0m</div>
+      
+      <nav class="segmented-control">
+        <button class="segment-btn active" data-tab="today">Today</button>
+        <button class="segment-btn" data-tab="week">This Week</button>
+        <button class="segment-btn" data-tab="all">All Time</button>
+      </nav>
     </header>
-
-    <nav class="tabs">
-      <button class="tab-btn active" data-tab="today">Today</button>
-      <button class="tab-btn" data-tab="week">This Week</button>
-      <button class="tab-btn" data-tab="all">All Time</button>
-    </nav>
 
     <main>
       <section id="today" class="tab-content active">
-        <div class="stats-summary">
-          <div class="stat-card">
-            <span class="stat-value" id="today-total">0m</span>
-            <span class="stat-label">Total Today</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value" id="today-sites">0</span>
-            <span class="stat-label">Sites Visited</span>
-          </div>
+        <div class="section-header">
+          <span class="section-title">Sites</span>
+          <span class="sites-count" id="today-sites">0 sites</span>
         </div>
-        <div class="site-list" id="today-list"></div>
+        <div class="site-list-container">
+          <div class="site-list" id="today-list"></div>
+        </div>
       </section>
 
       <section id="week" class="tab-content">
-        <div class="stats-summary">
-          <div class="stat-card">
-            <span class="stat-value" id="week-total">0m</span>
-            <span class="stat-label">Total This Week</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value" id="week-sites">0</span>
-            <span class="stat-label">Sites Visited</span>
-          </div>
+        <div class="section-header">
+          <span class="section-title">Sites</span>
+          <span class="sites-count" id="week-sites">0 sites</span>
         </div>
-        <div class="site-list" id="week-list"></div>
+        <div class="site-list-container">
+          <div class="site-list" id="week-list"></div>
+        </div>
       </section>
 
       <section id="all" class="tab-content">
-        <div class="stats-summary">
-          <div class="stat-card">
-            <span class="stat-value" id="all-total">0m</span>
-            <span class="stat-label">All Time</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value" id="all-sites">0</span>
-            <span class="stat-label">Sites Visited</span>
-          </div>
+        <div class="section-header">
+          <span class="section-title">Sites</span>
+          <span class="sites-count" id="all-sites">0 sites</span>
         </div>
-        <div class="site-list" id="all-list"></div>
+        <div class="site-list-container">
+          <div class="site-list" id="all-list"></div>
+        </div>
       </section>
     </main>
 
     <footer>
-      <button id="export-btn" class="action-btn">📥 Export Data</button>
-      <button id="clear-btn" class="action-btn danger">🗑️ Clear Data</button>
+      <button id="export-btn" class="action-btn">Export Data</button>
+      <button id="clear-btn" class="action-btn danger">Clear Data</button>
     </footer>
 
     <div class="privacy-notice">
-      🪢 Your data stays local, like knots on your cord
+      All data stays on your device
     </div>
   </div>
   <script src="popup.js"></script>
