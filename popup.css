@@ -4,16 +4,55 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* Shared accent colors */
+  --terracotta: #C2703E;
+  --gold: #D4A853;
+  --sage: #7D8471;
+  
+  /* Dark mode (default) */
+  --bg-primary: #1C1410;
+  --bg-secondary: #2A1F1A;
+  --bg-card: rgba(255, 255, 255, 0.04);
+  --bg-card-hover: rgba(255, 255, 255, 0.08);
+  --bg-subtle: rgba(255, 255, 255, 0.06);
+  --text-primary: #F5E6D3;
+  --text-secondary: #8B7355;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --scrollbar-track: rgba(255, 255, 255, 0.05);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-primary: #FAF6F1;
+    --bg-secondary: #F0E8DF;
+    --bg-card: rgba(0, 0, 0, 0.03);
+    --bg-card-hover: rgba(0, 0, 0, 0.06);
+    --bg-subtle: rgba(0, 0, 0, 0.04);
+    --text-primary: #2A1F1A;
+    --text-secondary: #6B5D4D;
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --scrollbar-track: rgba(0, 0, 0, 0.05);
+    --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  }
+}
+
 body {
   width: 380px;
   min-height: 500px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  color: #fff;
+  background: linear-gradient(165deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  color: var(--text-primary);
 }
 
 .container {
   padding: 16px;
+}
+
+.logo {
+  color: var(--terracotta);
+  margin-bottom: 8px;
 }
 
 header {
@@ -22,13 +61,16 @@ header {
 }
 
 header h1 {
-  font-size: 24px;
+  font-size: 22px;
   margin-bottom: 4px;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 .subtitle {
-  font-size: 12px;
-  color: #8b8b9a;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 .tabs {
@@ -42,8 +84,8 @@ header h1 {
   padding: 10px 12px;
   border: none;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #8b8b9a;
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -51,12 +93,14 @@ header h1 {
 }
 
 .tab-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
 }
 
 .tab-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--gold) 100%);
   color: #fff;
+  font-weight: 600;
 }
 
 .tab-content {
@@ -75,23 +119,24 @@ header h1 {
 
 .stat-card {
   flex: 1;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 16px;
   text-align: center;
+  border: 1px solid var(--border-subtle);
 }
 
 .stat-value {
   display: block;
   font-size: 28px;
   font-weight: 700;
-  color: #667eea;
+  color: var(--gold);
   margin-bottom: 4px;
 }
 
 .stat-label {
   font-size: 11px;
-  color: #8b8b9a;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -107,12 +152,12 @@ header h1 {
 }
 
 .site-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--scrollbar-track);
   border-radius: 3px;
 }
 
 .site-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
@@ -120,15 +165,17 @@ header h1 {
   display: flex;
   align-items: center;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border-radius: 10px;
   margin-bottom: 8px;
   transition: transform 0.2s ease, background 0.2s ease;
+  border-left: 3px solid transparent;
 }
 
 .site-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-card-hover);
   transform: translateX(4px);
+  border-left-color: var(--terracotta);
 }
 
 .site-favicon {
@@ -136,7 +183,7 @@ header h1 {
   height: 24px;
   border-radius: 6px;
   margin-right: 12px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,19 +211,19 @@ header h1 {
 
 .site-visits {
   font-size: 11px;
-  color: #8b8b9a;
+  color: var(--text-secondary);
 }
 
 .site-time {
   font-size: 14px;
   font-weight: 600;
-  color: #667eea;
+  color: var(--gold);
   padding-left: 12px;
 }
 
 .time-bar {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 3px;
+  background: var(--bg-subtle);
   border-radius: 2px;
   margin-top: 8px;
   overflow: hidden;
@@ -184,7 +231,7 @@ header h1 {
 
 .time-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, var(--terracotta) 0%, var(--gold) 100%);
   border-radius: 2px;
   transition: width 0.3s ease;
 }
@@ -200,8 +247,8 @@ footer {
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: var(--bg-subtle);
+  color: var(--text-primary);
   cursor: pointer;
   font-size: 12px;
   font-weight: 500;
@@ -209,32 +256,38 @@ footer {
 }
 
 .action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--bg-card-hover);
 }
 
 .action-btn.danger:hover {
-  background: rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.2);
+  color: #dc2626;
 }
 
 .privacy-notice {
   text-align: center;
   font-size: 11px;
-  color: #22c55e;
-  padding: 8px;
-  background: rgba(34, 197, 94, 0.1);
+  color: var(--sage);
+  padding: 10px;
+  background: rgba(125, 132, 113, 0.1);
   border-radius: 8px;
+  border: 1px solid rgba(125, 132, 113, 0.15);
 }
 
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #8b8b9a;
+  color: var(--text-secondary);
 }
 
 .empty-state-icon {
-  font-size: 48px;
   margin-bottom: 12px;
+  color: var(--terracotta);
+}
+
+.empty-state-icon svg {
+  width: 48px;
+  height: 48px;
 }
 
 .empty-state-text {

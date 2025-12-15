@@ -159,8 +159,23 @@ function displaySiteList(containerId, sites, maxTime) {
   if (sites.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-state-icon">📊</div>
-        <div class="empty-state-text">No browsing data yet.<br>Start browsing to see your stats!</div>
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 64 64" width="48" height="48">
+            <path d="M8 12 Q32 8 56 12" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M14 12 Q12 28 14 52" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="13" cy="24" r="2.5" fill="currentColor"/>
+            <circle cx="14" cy="38" r="2.5" fill="currentColor"/>
+            <path d="M24 11 Q26 30 24 56" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="25" cy="20" r="2.5" fill="currentColor"/>
+            <circle cx="24" cy="32" r="2.5" fill="currentColor"/>
+            <path d="M34 10 Q32 32 34 58" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="33" cy="26" r="2.5" fill="currentColor"/>
+            <path d="M44 11 Q46 28 44 54" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="45" cy="22" r="2.5" fill="currentColor"/>
+            <circle cx="44" cy="36" r="2.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="empty-state-text">No knots yet.<br>Browse to begin recording.</div>
       </div>
     `;
     return;
@@ -227,7 +242,7 @@ async function exportData() {
     
     const a = document.createElement('a');
     a.href = url;
-    a.download = `webtime-export-${getTodayKey()}.json`;
+    a.download = `quipu-pacha-${getTodayKey()}.json`;
     a.click();
     
     URL.revokeObjectURL(url);

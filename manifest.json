@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "WebTime - Local Time Tracker",
+  "name": "Quipu Pacha",
   "version": "1.0.0",
-  "description": "Track your browsing time privately. All data stored locally on your device.",
+  "description": "Track your time across the digital world. All data stored locally, like knots on a cord.",
   "permissions": [
     "tabs",
     "storage",
@@ -13,7 +13,17 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
