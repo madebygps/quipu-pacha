@@ -1,11 +1,15 @@
 # Quipu Pacha
 
+
+
 *Recording your spacetime*
 
 Track time across the digital world. All data stored locally.
 
 **Pacha** - spacetime (Quechua)
 **Quipu** - Inca knot-based data recording
+
+![img](screen.png)
 
 ## How It Works
 
